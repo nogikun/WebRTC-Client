@@ -2,7 +2,7 @@
 
 React + TypeScript + Storybookで構築されたWebRTCクライアントアプリケーション
 
-## 🌐 デモ
+## 🌐 Demo
 
 **Live Demo:** https://nogikun.github.io/WebRTC-Client/
 
@@ -14,34 +14,6 @@ React + TypeScript + Storybookで構築されたWebRTCクライアントアプ�
 - ⚡ Viteによる高速ビルド
 - 📱 レスポンシブデザイン
 - 🚀 GitHub Pagesへの自動デプロイ
-
-## 🚀 クイックスタート
-
-### デプロイ
-
-```bash
-# GitHub Pagesへデプロイ
-git push origin main  # 自動的にデプロイされます
-```
-
-詳細: [QUICKSTART_DEPLOY.md](QUICKSTART_DEPLOY.md)
-
-### 開発
-
-```bash
-cd dev
-NODE_ENV=development npm install
-npm run dev
-```
-
-詳細: [README_PROJECT.md](README_PROJECT.md)
-
-## 📚 ドキュメント
-
-- [プロジェクト詳細](README_PROJECT.md) - プロジェクト構成と技術スタック
-- [デプロイガイド](DEPLOY.md) - GitHub Pagesへのデプロイ方法
-- [クイックスタート](QUICKSTART_DEPLOY.md) - すぐにデプロイする
-- [作業サマリー](WORK_SUMMARY.md) - 実装内容の詳細
 
 ## textlintによる文章チェック
 
