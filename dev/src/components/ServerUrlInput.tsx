@@ -20,7 +20,7 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
     try {
       const parsedUrl = new URL(url);
       return {
-        protocol: (parsedUrl.protocol.replace(':', '') + '://') as 'wss://' | 'ws://' | 'https://' | 'http://',
+        protocol: (parsedUrl.protocol.replace(':', '') + '://') as 'wss://' | 'ws://',
         host: parsedUrl.host,
         path: parsedUrl.pathname,
       };
@@ -34,7 +34,7 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
   };
 
   const parsed = parseUrl(defaultUrl);
-  const [protocol, setProtocol] = useState<'wss://' | 'ws://' | 'https://' | 'http://'>(parsed.protocol);
+  const [protocol, setProtocol] = useState<'wss://' | 'ws://'>(parsed.protocol);
   const [host, setHost] = useState(parsed.host);
   const [path, setPath] = useState(parsed.path);
 
@@ -44,7 +44,7 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
   };
 
   const handleProtocolChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setProtocol(e.target.value as 'wss://' | 'ws://' | 'https://' | 'http://');
+    setProtocol(e.target.value as 'wss://' | 'ws://');
   };
 
   return (
@@ -66,12 +66,10 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
               value={protocol}
               onChange={handleProtocolChange}
               disabled={disabled}
-              className="w-28"
+              className="w-24"
             >
               <option value="wss://">wss://</option>
               <option value="ws://">ws://</option>
-              <option value="https://">https://</option>
-              <option value="http://">http://</option>
             </Select>
 
             <Input

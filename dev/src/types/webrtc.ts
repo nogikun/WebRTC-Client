@@ -15,7 +15,7 @@ export interface WebRTCConfig {
  * Signaling Message Types
  */
 export interface SignalingMessage {
-  type: 'offer' | 'answer' | 'ice-candidate' | 'join' | 'leave';
+  type: 'offer' | 'answer' | 'ice-candidate' | 'join' | 'leave' | 'joined';
   data?: RTCSessionDescriptionInit | RTCIceCandidateInit | any;
 }
 

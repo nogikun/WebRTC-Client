@@ -93,13 +93,22 @@ function App() {
 
       <main className="max-w-7xl mx-auto px-4 py-4">
         {error && (
-          <Card className="mb-4 border-destructive bg-card">
-            <div className="p-3">
-              <div className="flex items-center gap-2">
-                <span className="text-lg">⚠️</span>
-                <div>
-                  <h3 className="font-semibold text-destructive">エラーが発生しました</h3>
-                  <p className="text-sm text-muted-foreground">{error.message}</p>
+          <Card className="mb-4 border-destructive bg-destructive/10">
+            <div className="p-4">
+              <div className="flex items-start gap-3">
+                <span className="text-2xl">⚠️</span>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-destructive mb-1">エラーが発生しました</h3>
+                  <p className="text-sm text-foreground mb-2">{error.message}</p>
+                  <details className="text-xs text-muted-foreground">
+                    <summary className="cursor-pointer hover:text-foreground">トラブルシューティング</summary>
+                    <ul className="mt-2 space-y-1 list-disc list-inside">
+                      <li>シグナリングサーバーが起動しているか確認してください</li>
+                      <li>URLが正しいか確認してください（ws://またはwss://で始まる必要があります）</li>
+                      <li>ファイアウォールやプロキシの設定を確認してください</li>
+                      <li>HTTPSページからはwss://を、HTTPページからはws://を使用してください</li>
+                    </ul>
+                  </details>
                 </div>
               </div>
             </div>

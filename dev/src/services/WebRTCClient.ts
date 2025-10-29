@@ -48,6 +48,7 @@ export class WebRTCClient {
 
     return new Promise((resolve, reject) => {
       try {
+        console.log('Connecting to signaling server:', this.signalingUrl);
         this.websocket = new WebSocket(this.signalingUrl);
 
         this.websocket.onopen = () => {
@@ -73,12 +74,18 @@ export class WebRTCClient {
 
         this.websocket.onerror = (error) => {
           console.error('Signaling error:', error);
-          this.handleError(new Error('Signaling connection error'));
-          reject(error);
+          const errorMsg = `シグナリングサーバーへの接続に失敗しました (${this.signalingUrl})`;
+          this.handleError(new Error(errorMsg));
+          reject(new Error(errorMsg));
         };
 
-        this.websocket.onclose = () => {
-          console.log('Signaling server disconnected');
+        this.websocket.onclose = (event) => {
+          console.log('Signaling server disconnected', event);
+          if (event.code !== 1000) {
+            // 正常終了以外の場合
+            const errorMsg = `接続が切断されました (code: ${event.code}, reason: ${event.reason || '不明'})`;
+            this.handleError(new Error(errorMsg));
+          }
           this.events.onSignalingDisconnected?.();
         };
       } catch (error) {
@@ -94,6 +101,17 @@ export class WebRTCClient {
     console.log('Received signaling message:', message);
 
     switch (message.type) {
+      case 'joined':
+        // サーバーへの参加確認メッセージ
+        console.log('Successfully joined signaling server');
+        
+        // 自動で通話を開始
+        console.log('🎥 Auto-starting call...');
+        this.startCall().catch(error => {
+          console.error('Failed to auto-start call:', error);
+        });
+        break;
+
       case 'offer':
         if (message.data && this.peerConnection) {
           await this.peerConnection.setRemoteDescription(
@@ -122,6 +140,11 @@ export class WebRTCClient {
             new RTCIceCandidate(message.data as RTCIceCandidateInit)
           );
         }
+        break;
+
+      case 'leave':
+        // 相手が退出した場合
+        console.log('Remote peer left');
         break;
 
       default:
@@ -205,6 +228,45 @@ export class WebRTCClient {
       
       return this.localStream;
     } catch (error) {
+      this.handleError(error as Error);
+      throw error;
+    }
+  }
+
+  /**
+   * Start a call (get media and create offer)
+   */
+  public async startCall(): Promise<void> {
+    try {
+      console.log('🎥 Starting call...');
+      
+      // 1. Get camera and microphone
+      const stream = await this.startLocalStream({
+        video: true,
+        audio: true
+      });
+      
+      console.log('✅ Got media stream');
+      
+      // 2. Create offer
+      const offer = await this.peerConnection!.createOffer({
+        offerToReceiveVideo: true,
+        offerToReceiveAudio: true
+      });
+      
+      await this.peerConnection!.setLocalDescription(offer);
+      console.log('✅ Offer created');
+      
+      // 3. Send offer to server
+      this.sendSignalingMessage({
+        type: 'offer',
+        data: offer
+      });
+      
+      console.log('✅ Offer sent to server');
+      
+    } catch (error) {
+      console.error('❌ Failed to start call:', error);
       this.handleError(error as Error);
       throw error;
     }
