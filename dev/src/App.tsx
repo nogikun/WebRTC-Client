@@ -5,6 +5,7 @@ import { ConnectionStatus } from './components/ConnectionStatus';
 import { ControlPanel } from './components/ControlPanel';
 import { ServerUrlInput } from './components/ServerUrlInput';
 import { Card } from './components/ui/card';
+import { ThemeToggle } from './components/ThemeToggle';
 
 function App() {
   const [signalingUrl, setSignalingUrl] = useState<string>('');
@@ -74,6 +75,7 @@ function App() {
               WebRTC Client
             </h1>
             <div className="flex items-center gap-3">
+              <ThemeToggle />
               <ConnectionStatus state={connectionState} />
               {isSignalingConnected && (
                 <div className="flex items-center gap-2 text-sm text-foreground">
