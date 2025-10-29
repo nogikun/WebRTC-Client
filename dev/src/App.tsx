@@ -6,6 +6,7 @@ import { ControlPanel } from './components/ControlPanel';
 import { ServerUrlInput } from './components/ServerUrlInput';
 import { Card } from './components/ui/card';
 import { ThemeToggle } from './components/ThemeToggle';
+import { GitHubLink } from './components/GitHubLink';
 
 function App() {
   const [signalingUrl, setSignalingUrl] = useState<string>('');
@@ -170,6 +171,9 @@ function App() {
                 接続先: {signalingUrl}
               </p>
             )}
+            <div className="flex justify-center items-center mt-2">
+              <GitHubLink url="https://github.com/nogikun/WebRTC-Client" />
+            </div>
           </div>
         </div>
       </footer>
