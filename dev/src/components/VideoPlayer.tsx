@@ -17,8 +17,14 @@ export const VideoPlayer: React.FC<VideoPlayerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
-    if (videoRef.current && stream) {
-      videoRef.current.srcObject = stream;
+    if (videoRef.current) {
+      if (stream && stream.active) {
+        videoRef.current.srcObject = stream;
+      } else {
+        videoRef.current.srcObject = null;
+        // Reset video element to clear any displayed frame
+        videoRef.current.load();
+      }
     }
   }, [stream]);
 

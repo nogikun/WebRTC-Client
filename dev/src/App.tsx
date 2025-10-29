@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useWebRTC } from './hooks/useWebRTC';
 import { VideoPlayer } from './components/VideoPlayer';
 import { ConnectionStatus } from './components/ConnectionStatus';
@@ -24,6 +24,14 @@ function App() {
   const [isCallActive, setIsCallActive] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isVideoEnabled, setIsVideoEnabled] = useState(true);
+
+  // ローカルストリームが途切れたらリセット
+  useEffect(() => {
+    if (isCallActive && !localStream) {
+      console.log('Local stream lost, resetting call state');
+      setIsVideoEnabled(false);
+    }
+  }, [localStream, isCallActive]);
 
   const handleServerConnect = (url: string) => {
     setSignalingUrl(url);

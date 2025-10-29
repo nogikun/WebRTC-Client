@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Select } from './ui/select';
 import { Server } from 'lucide-react';
+import { useAppDispatch, useAppSelector } from '../redux/hooks';
+import { setUrl } from '../redux/slices/urlSlice';
 
 export interface ServerUrlInputProps {
   onConnect: (url: string) => void;
@@ -16,6 +18,9 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
   disabled = false,
   defaultUrl = 'wss://localhost:8000/webrtc',
 }) => {
+  const dispatch = useAppDispatch();
+  const savedUrl = useAppSelector((state) => state.url.url);
+
   const parseUrl = (url: string) => {
     try {
       const parsedUrl = new URL(url);
@@ -33,13 +38,23 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
     }
   };
 
-  const parsed = parseUrl(defaultUrl);
+  // 保存されたURLがあればそれを使用、なければdefaultUrl
+  const initialUrl = savedUrl || defaultUrl;
+  const parsed = parseUrl(initialUrl);
+  
   const [protocol, setProtocol] = useState<'wss://' | 'ws://'>(parsed.protocol);
   const [host, setHost] = useState(parsed.host);
   const [path, setPath] = useState(parsed.path);
 
+  // URLが変更されたらReduxに保存
+  useEffect(() => {
+    const fullUrl = `${protocol}${host}${path}`;
+    dispatch(setUrl(fullUrl));
+  }, [protocol, host, path, dispatch]);
+
   const handleConnect = () => {
     const fullUrl = `${protocol}${host}${path}`;
+    dispatch(setUrl(fullUrl));
     onConnect(fullUrl);
   };
 
@@ -61,12 +76,12 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
             接続先サーバー
           </label>
           
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Select
               value={protocol}
               onChange={handleProtocolChange}
               disabled={disabled}
-              className="w-24"
+              className="w-24 flex-shrink-0 sm:w-24 max-sm:w-full max-sm:flex-1"
             >
               <option value="wss://">wss://</option>
               <option value="ws://">ws://</option>
@@ -78,7 +93,7 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
               value={host}
               onChange={(e) => setHost(e.target.value)}
               disabled={disabled}
-              className="flex-1"
+              className="flex-1 min-w-[180px] max-w-full max-sm:min-w-full max-sm:w-full"
             />
 
             <Input
@@ -87,7 +102,7 @@ export const ServerUrlInput: React.FC<ServerUrlInputProps> = ({
               value={path}
               onChange={(e) => setPath(e.target.value)}
               disabled={disabled}
-              className="w-32"
+              className="w-32 min-w-[100px] flex-shrink-0 max-sm:w-full max-sm:flex-1 max-sm:min-w-full"
             />
           </div>
         </div>

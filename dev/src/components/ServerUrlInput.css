@@ -134,3 +134,45 @@
     max-width: none;
   }
 }
+
+/* 追加のレスポンシブ対応: 画面幅が狭い場合に改行 */
+@media (max-width: 640px) {
+  .server-url-input {
+    padding: 16px;
+  }
+  
+  .url-builder {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .protocol-select,
+  .host-input,
+  .path-input {
+    width: 100%;
+    min-width: auto;
+  }
+  
+  .preview-url {
+    font-size: 11px;
+    word-break: break-all;
+    white-space: normal;
+  }
+}
+
+/* タブレットサイズでの対応 */
+@media (max-width: 900px) and (min-width: 641px) {
+  .url-builder {
+    flex-wrap: wrap;
+  }
+  
+  .host-input {
+    min-width: 150px;
+    flex-basis: calc(100% - 140px);
+  }
+  
+  .path-input {
+    flex-basis: 100%;
+    max-width: none;
+  }
+}

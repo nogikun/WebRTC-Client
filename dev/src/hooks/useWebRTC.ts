@@ -55,6 +55,28 @@ export function useWebRTC(signalingUrl?: string) {
       try {
         const stream = await clientRef.current.startLocalStream(constraints);
         setLocalStream(stream);
+        
+        // Monitor stream for track ended events
+        stream.getTracks().forEach(track => {
+          track.addEventListener('ended', () => {
+            console.log('Track ended:', track.kind);
+            // Reset local stream when any track has ended
+            const allTracksEnded = stream.getTracks().every(t => t.readyState === 'ended');
+            const anyTrackEnded = stream.getTracks().some(t => t.readyState === 'ended');
+            
+            if (allTracksEnded || anyTrackEnded) {
+              console.log('Resetting local stream due to track ending');
+              setLocalStream(null);
+              // Stop all remaining tracks
+              stream.getTracks().forEach(t => {
+                if (t.readyState === 'live') {
+                  t.stop();
+                }
+              });
+            }
+          });
+        });
+        
         return stream;
       } catch (err) {
         setError(err as Error);
